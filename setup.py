@@ -13,6 +13,7 @@ setup(name='bratdb',
           'Intended Audience :: Science/Research',
           'Programming Language :: Python :: 3 :: Only',
           'Topic :: Text Processing :: Linguistic',
+          'License :: OSI Approved :: MIT License',
       ],
       keywords='nlp information extraction brat',
       entry_points={
