@@ -4,7 +4,7 @@ import setuptools
 setup(name='bratdb',
       version='0.0.1',
       description='Extract brat-formatted data to prepare the annotated data for various NLP applications',
-      url='https://bitbucket.org/dcronkite/pytakes',
+      url='https://github.com/kpwhri/bratdb',
       author='dcronkite',
       author_email='dcronkite@gmail.com',
       license='MIT',
