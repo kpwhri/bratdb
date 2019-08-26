@@ -6,7 +6,7 @@ from loguru import logger
 
 def initialize_logging(logdir):
     logger.remove()
-    logger.start(sys.stderr, level='WARNING')
+    logger.start(sys.stderr, level='INFO')
     logfile = 'bratdb_{time}.log'
     logpath = os.path.join(logdir, logfile)
-    logger.add(logpath, level='INFO', rotation='0:01', compression='zip')
+    logger.add(logpath, level='DEBUG', rotation='0:01', compression='zip')

@@ -61,13 +61,19 @@ def build_brat_dump(ann_dir, txt_dir, outdir='data'):
     :return:
     """
     os.makedirs(outdir, exist_ok=True)
-    data = read_brat_directory(ann_dir, txt_dir)
+    counter = defaultdict(int)
+    data = read_brat_directory(ann_dir, txt_dir, counter=counter)
+    logger.info(f'Identified *.ann files: {counter["annfiles"]}')
+    logger.info(f' - missing *.txt files: {counter["missing_text"]}')
+    logger.info(f' - no annotations (possibly never reviewed): {counter["no_annotations"]}')
+    total_count = counter['annfiles'] - counter['missing_text'] - counter['no_annotations']
+    logger.info(f'Total annotation files added to dump: {total_count}')
     dt = datetime.datetime.now().strftime('%Y%m%d')
     with open(os.path.join(outdir, f'brat_dump_{dt}.pkl'), 'wb') as fh:
         pickle.dump(data, fh)
 
 
-def read_brat_directory(ann_dir, txt_dir=None):
+def read_brat_directory(ann_dir, txt_dir=None, counter=None):
     """Read brat directory (or directories)
 
     The first layer in ann_dir will be treated as a separate abstractor.
@@ -84,12 +90,15 @@ def read_brat_directory(ann_dir, txt_dir=None):
             name, ext = os.path.splitext(file)
             if ext != '.ann':
                 continue
+            counter['annfiles'] += 1
             txt_path = text_finder[name]
             if not txt_path:
                 logger.error(f'Unable to locate text file for annotation "{name}"')
+                counter['missing_text'] += 1
                 continue
             annotations = create_annotations(os.path.join(root, file), txt_path)
             if not annotations:
+                counter['no_annotations'] += 1
                 continue
             data[name].append(annotations)
     return data
