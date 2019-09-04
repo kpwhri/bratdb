@@ -40,6 +40,18 @@ bdb-build <annotation_dir> <text_dir> <output_dir>
 * output_dir: directory to place brat dump
 * `--logdir <logdir>`: optionally specify logging output directory
 
+#### Get term frequencies
+
+Use the brat dump to generate term frequencies. To get a nice `*.rst` file you will need to install the [`pyscriven`](https://github.com/kpwhri/pyscriven) package (otherwise you'll get not-so-nice looking text file). You can then use [`pandoc`](https://pandoc.org/) to convert the `*.rst` file into a variety of formats.
+
+```text
+bdb-freq <bratdb_file>
+``` 
+
+* bratdb_file: the file created from `bdb-build` (above)
+* --outpath: specify output file to write to
+* --title: specify title of output file
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/kpwhri/bratdb/tags). 
