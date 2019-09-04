@@ -35,22 +35,31 @@ This step is required to begin interacting with the brat data. It will create a 
 bdb-build <annotation_dir> <text_dir> <output_dir>
 ```
 
-* annotation_dir: directory containing brat's `*.ann` files, this can be the same as the `*.txt` files
-* text_dir: directory containing brat's `*.txt` files, this can also have the `*.ann` files
-* output_dir: directory to place brat dump
+* `annotation_dir`: directory containing brat's `*.ann` files, this can be the same as the `*.txt` files
+* `text_dir`: directory containing brat's `*.txt` files, this can also have the `*.ann` files
+* `output_dir`: directory to place brat dump
 * `--logdir <logdir>`: optionally specify logging output directory
+
+#### Get information on bratdb file
+
+The brat dump is a bit inscrutable. You can use the `bdb-info` command to get some basic information about the pickle file.
+
+```text
+bdb-info <bratdb>
+```
+* `bratdb`: the file created from `bdb-build` (above)
 
 #### Get term frequencies
 
 Use the brat dump to generate term frequencies. To get a nice `*.rst` file you will need to install the [`pyscriven`](https://github.com/kpwhri/pyscriven) package (otherwise you'll get not-so-nice looking text file). You can then use [`pandoc`](https://pandoc.org/) to convert the `*.rst` file into a variety of formats.
 
 ```text
-bdb-freq <bratdb_file>
+bdb-freq <bratdb>
 ``` 
 
-* bratdb_file: the file created from `bdb-build` (above)
-* --outpath: specify output file to write to
-* --title: specify title of output file
+* `bratdb`: the file created from `bdb-build` (above)
+* `--outpath`: specify output file to write to
+* `--title`: specify title of output file
 
 ## Versioning
 
