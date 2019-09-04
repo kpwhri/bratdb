@@ -1,4 +1,4 @@
-from bratdb.funcs.info import get_bratdb_info
+from bratdb.funcs.info import build_bratdb_info_file
 
 
 def main():
@@ -10,4 +10,8 @@ def main():
     parser.add_argument('--outpath', default=None,
                         help='Output file containing frequencies')
     args = parser.parse_args()
-    get_bratdb_info(**vars(args))
+    build_bratdb_info_file(**vars(args))
+
+
+if __name__ == '__main__':
+    main()

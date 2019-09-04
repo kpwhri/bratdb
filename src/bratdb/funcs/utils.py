@@ -19,6 +19,14 @@ class BratCollection:  # TODO: make into 3.7 dataclass
     def sents(self):
         return self.sentences
 
+    @property
+    def doc_count(self):
+        return len(self.annotations)
+
+    def __iter__(self):
+        for name in self.annotations:
+            yield name, self.annotations[name], self.sentences[name]
+
 
 def load_brat_dump(path, *, version=0):
     if version == 0:
@@ -37,7 +45,7 @@ def load_brat_dump(path, *, version=0):
         raise ValueError(f'Unknown version: {version}')
 
 
-def get_output_path(target_path, outpath=None, exts=('txt', )):
+def get_output_path(target_path, outpath=None, exts=('txt',)):
     if outpath:  # outpath already exists
         return outpath
     path, fn = os.path.split(target_path)
