@@ -1,3 +1,4 @@
+import os
 import pickle
 from collections import defaultdict
 
@@ -34,3 +35,12 @@ def load_brat_dump(path, *, version=0):
             return pickle.load(fh)
     else:
         raise ValueError(f'Unknown version: {version}')
+
+
+def get_output_path(target_path, outpath=None, exts=('txt', )):
+    if outpath:  # outpath already exists
+        return outpath
+    path, fn = os.path.split(target_path)
+    fn_elements = (fn.split('.')[0],) + exts
+    outpath = os.path.join(path, '.'.join(fn_elements))
+    return outpath

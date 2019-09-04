@@ -8,7 +8,7 @@ try:
 except ImportError:
     PYSCRIVEN = False
 
-from bratdb.funcs.utils import load_brat_dump
+from bratdb.funcs.utils import load_brat_dump, get_output_path
 
 
 def build_simple_freq_file(freqs, ofp):
@@ -23,11 +23,8 @@ def build_simple_freq_file(freqs, ofp):
 
 
 def build_frequency_file(bratdb, *, outpath=None, title='Term Frequency', **kwargs):
-    if not outpath:
-        path, fn = os.path.split(bratdb)
-        fn = fn.split('.')[0] + '.freq'
-        fn += '.rst' if PYSCRIVEN else '.txt'
-        outpath = os.path.join(path, fn)
+    outpath = get_output_path(bratdb, outpath,
+                              exts=('freq', '.rst' if PYSCRIVEN else '.txt'))
     freqs = get_frequency(bratdb, **kwargs)
     if not PYSCRIVEN:
         return build_simple_freq_file(freqs, outpath)
