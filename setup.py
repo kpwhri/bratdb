@@ -2,7 +2,7 @@ from distutils.core import setup
 import setuptools
 
 setup(name='bratdb',
-      version='0.0.2',
+      version='0.0.3',
       description='Extract brat-formatted data to prepare the annotated data for various NLP applications',
       url='https://github.com/kpwhri/bratdb',
       author='dcronkite',
