@@ -4,7 +4,7 @@ from collections import defaultdict
 import pickle
 from loguru import logger
 
-from bratdb.sspl import sentencebreaks_to_list
+from bratdb.nlp.sspl import sentencebreaks_to_list
 from bratdb.annotation import Annotation
 from bratdb.doc.sentence import Sentence
 
