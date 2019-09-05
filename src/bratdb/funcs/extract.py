@@ -33,15 +33,17 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
 def extract_keywords_to_file(bratdb, *, outpath=None,
                              sep='\t',
                              **kwargs):
-    outpath = get_output_path(bratdb, outpath, exts=('extract', 'tsv'))
+    _outpath = get_output_path(bratdb, outpath, exts=('extract',))
+    outpath = f'{outpath}.tsv'
     info_path = f'{outpath}.info'
+    dupe_path = f'{outpath}.dupes'
     data, dupe_dict = get_keywords(bratdb, **kwargs)
     with open(outpath, 'w') as out:
         out.write('concept\tkeyword\tfreq\n')
         for (concept, keyword), freq in data.items():
             out.write(f'{concept}{sep}{keyword}{sep}{freq}\n')
 
-    with open(info_path, 'w') as out:
+    with open(dupe_path, 'w') as out:
         out.write('keyword\tconcepts\n')
         for keyword, concepts in dupe_dict.items():
             concepts = (f'{k} ({v})' for k, v in Counter(concepts).most_common())
