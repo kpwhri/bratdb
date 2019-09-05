@@ -7,10 +7,10 @@ from bratdb.nlp.stopwords import get_stopwords
 class Segment:
     STOPWORDS = get_stopwords()
 
-    def __init__(self, term, is_punct=False):
+    def __init__(self, term, is_punct=False, ignore_stopwords=False):
         self.term = term
         self.is_punct = is_punct
-        self.is_slop = self.term in self.STOPWORDS
+        self.is_slop = not ignore_stopwords and self.term in self.STOPWORDS
 
     @property
     def is_keyword(self):
@@ -22,15 +22,17 @@ class Term:
                           r'|[\d]+(\.[\d]+)?)')
     PUNCT = set(string.punctuation)
 
-    def __init__(self, term):
+    def __init__(self, term, ignore_stopwords=False):
         self._orig_term = term.strip().lower()
         self._segments = []
         prev = None
         for m in self.WORD_PAT.finditer(self._orig_term):
             if prev:
                 self._segments.append(Segment(self.get_punctuation(prev, m.start()),
-                                              is_punct=True))
-            self._segments.append(Segment(m.group()))
+                                              is_punct=True,
+                                              ignore_stopwords=ignore_stopwords))
+            self._segments.append(Segment(m.group(),
+                                          ignore_stopwords=ignore_stopwords))
             prev = m.end()
         self._keywords = tuple(w.term for w in self._segments if w.is_keyword)
 

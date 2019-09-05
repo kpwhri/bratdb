@@ -10,7 +10,13 @@ def main():
                         help='Path to brat data dump (result of build script)')
     parser.add_argument('--outpath', default=None,
                         help='Output file containing frequencies')
-    # TODO: add tags to ignore
+    parser.add_argument('--ignore-tags', dest='ignore_tags', default=None, nargs='+',
+                        help='Ignore specified tags/labels;'
+                             ' ignored if `keep-tags` is specified')
+    parser.add_argument('--keep-tags', dest='keep_tags', default=None, nargs='+',
+                        help='Keep only tags listed here; overrides `ignore-tags`')
+    parser.add_argument('--ignore-stopwords', dest='ignore_stopwords', default=False, action='store_true',
+                        help='Ignore stopwords')
     parser.add_argument('--logdir', default='.',
                         help='Directory to place log files.')
     args = parser.parse_args()
