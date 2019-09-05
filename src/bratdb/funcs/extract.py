@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 from loguru import logger
 
@@ -12,13 +12,13 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
     # collect all keywords
     ann_dict = defaultdict(int)  # concept, term -> frequency
     # look for overlapping keywords
-    keyword_dict = defaultdict(set)  # keywords -> concept
+    keyword_dict = defaultdict(list)  # keywords -> concept
     for annots in brat.annots.values():
         for annot_set in annots:
             for annot in annot_set.values():
                 term = Term(annot.text)
                 for label in annot.labels:
-                    keyword_dict[term.keywordstr].add(label)
+                    keyword_dict[term.keywordstr].append(label)
                     ann_dict[(label, term)] += 1
     return ann_dict, dict(filter(lambda x: len(x[1]) > 1, keyword_dict.items()))
 
@@ -37,4 +37,5 @@ def extract_keywords_to_file(bratdb, *, outpath=None,
     with open(info_path, 'w') as out:
         out.write('keyword\tconcepts\n')
         for keyword, concepts in dupe_dict.items():
+            concepts = (f'{k} ({v})' for k, v in Counter(concepts).most_common())
             out.write(f'{keyword}\t{", ".join(concepts)}\n')
