@@ -42,6 +42,10 @@ class Term:
         return self._keywords
 
     @property
+    def keywordstr(self):
+        return ' '.join(self.keywords)
+
+    @property
     def segments(self):
         segs = []
         punct = set()
@@ -72,3 +76,6 @@ class Term:
 
     def __hash__(self):
         return hash(self._keywords)
+
+    def __str__(self):
+        return ' '.join(self.segments)
