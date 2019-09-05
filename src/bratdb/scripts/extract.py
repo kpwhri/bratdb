@@ -17,6 +17,9 @@ def main():
                         help='Keep only tags listed here; overrides `ignore-tags`')
     parser.add_argument('--ignore-stopwords', dest='ignore_stopwords', default=False, action='store_true',
                         help='Ignore stopwords')
+    parser.add_argument('--allow-multiple-labels-per-term', dest='one_label_per_term',
+                        default=True, action='store_false',
+                        help='Allow all terms to be associated with more than one label/concept/term.')
     parser.add_argument('--logdir', default='.',
                         help='Directory to place log files.')
     args = parser.parse_args()

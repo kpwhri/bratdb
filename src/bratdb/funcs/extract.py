@@ -31,20 +31,27 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
 
 
 def extract_keywords_to_file(bratdb, *, outpath=None,
-                             sep='\t',
+                             sep='\t', one_label_per_term=True,
                              **kwargs):
     _outpath = get_output_path(bratdb, outpath, exts=('extract',))
-    outpath = f'{outpath}.tsv'
-    info_path = f'{outpath}.info'
-    dupe_path = f'{outpath}.dupes'
+    outpath = f'{_outpath}.tsv'
+    info_path = f'{_outpath}.info'
+    dupe_path = f'{_outpath}.dupes'
     data, dupe_dict = get_keywords(bratdb, **kwargs)
-    with open(outpath, 'w') as out:
-        out.write('concept\tkeyword\tfreq\n')
-        for (concept, keyword), freq in data.items():
-            out.write(f'{concept}{sep}{keyword}{sep}{freq}\n')
 
+    keyword_to_concept = {}  # store only most frequent label with each concept
     with open(dupe_path, 'w') as out:
         out.write('keyword\tconcepts\n')
         for keyword, concepts in dupe_dict.items():
-            concepts = (f'{k} ({v})' for k, v in Counter(concepts).most_common())
+            mc = Counter(concepts).most_common()
+            concepts = (f'{k} ({v})' for k, v in mc)
             out.write(f'{keyword}\t{", ".join(concepts)}\n')
+            if one_label_per_term:
+                keyword_to_concept[keyword] = mc[0][0]
+
+    with open(outpath, 'w') as out:
+        out.write('concept\tterm\tfreq\n')
+        for (concept, term), freq in data.items():
+            # only keep majority term
+            if keyword_to_concept.get(term.keywordstr, concept) == concept:
+                out.write(f'{concept}{sep}{term}{sep}{freq}\n')
