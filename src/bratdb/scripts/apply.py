@@ -1,0 +1,22 @@
+import argparse
+
+from bratdb.funcs.apply import apply_regex_to_corpus
+from bratdb.logger import initialize_logging
+
+
+def main():
+    parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
+    parser.add_argument('regex',
+                        help='Regex tsv file of bdb-extract-regex process;'
+                             ' concept {tab} term {tab} regex')
+    parser.add_argument('--outpath', default=None,
+                        help='Output file containing frequencies')
+    parser.add_argument('--logdir', default='.',
+                        help='Directory to place log files.')
+    args = parser.parse_args()
+    initialize_logging(logdir=args.logdir)
+    apply_regex_to_corpus(**vars(args))
+
+
+if __name__ == '__main__':
+    main()
