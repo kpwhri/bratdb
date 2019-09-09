@@ -3,7 +3,7 @@ from collections import defaultdict, Counter
 from loguru import logger
 
 from bratdb.funcs.utils import get_output_path, load_brat_dump
-from bratdb.term import Term
+from bratdb.term import Term, TermSet
 
 
 def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
@@ -13,11 +13,10 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
 
     brat = load_brat_dump(bratdb)
     # collect all keywords
-    ann_dict = defaultdict(int)  # concept, term -> frequency
+    ann_dict = TermSet()  # concept, term -> frequency
     # look for overlapping keywords
     keyword_dict = defaultdict(list)  # keywords -> concept
     for annots in brat.annots.values():
-        curr_ann = set()  # all terms in current doc only
         for annot_set in annots:
             for annot in annot_set.values():
                 term = Term(annot.text, ignore_stopwords=ignore_stopwords)
@@ -28,10 +27,8 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
                         continue
                     keyword_dict[term.keywordstr].append(label)
                     # TODO: terms need to be merged to take longest string
-                    curr_ann.add((label, term))
-        for label, term in curr_ann:
-            # don't let multiple annotations in same doc influence the counts
-            ann_dict[(label, term)] += 1
+                    ann_dict.add(term, label)
+        ann_dict.update()
     return ann_dict, dict(filter(lambda x: len(x[1]) > 1, keyword_dict.items()))
 
 
@@ -56,7 +53,7 @@ def extract_keywords_to_file(bratdb, *, outpath=None,
 
     with open(outpath, 'w') as out:
         out.write('concept\tterm\tfreq\n')
-        for (concept, term), freq in data.items():
+        for concept, keywordstr, freq in data.term_frequencies:
             # only keep majority term
-            if keyword_to_concept.get(term.keywordstr, concept) == concept:
-                out.write(f'{concept}{sep}{term}{sep}{freq}\n')
+            if keyword_to_concept.get(keywordstr, concept) == concept:
+                out.write(f'{concept}{sep}{keywordstr}{sep}{freq}\n')
