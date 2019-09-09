@@ -61,6 +61,32 @@ bdb-freq <bratdb>
 * `--outpath`: specify output file to write to
 * `--title`: specify title of output file
 
+#### Extract term keywords
+
+One of the primary goals in getting annotated data is to use extract and deploy those keywords to markup other, unannotated data. In `bratdb` this requires 3 steps:
+
+1. `bdb-extract`: extract keywords; these can then be manually manipulated for the build step
+1. `bdb-extract-build`: convert the keywords into regular expressions
+1. `bdb-apply`: 'tag' the keywords in a separate document dataset 
+
+##### bdb-extract
+Extract significant keywords from the `bratdb`. This process will produce several output files describing the work done.
+
+1. `*.extract.tsv`: primary output file which will be used as input to `bdb-extract-build`
+2. `*.extract.freq.tsv`: show the frequency of each annotated `concept, term` pair
+3. `*.extract.dupes`: often, the same term will be assigned multiple categories/concepts/labels; this document lists the variations
+4. `*.extract.add.hapax`: lists the single-occuring terms which were still identified as useful; it may be worthwhile to review and ensure that no useless combinations were included
+5. `*.extract.omit.hapax`: lists the single-occurring terms which were omitted from the termlist; it may be worthwhile to review and ensure that no potentially useful terms were left out
+
+
+##### bdb-extract-build
+TODO
+
+##### bdb-apply
+TODO
+
+
+
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/kpwhri/bratdb/tags). 
