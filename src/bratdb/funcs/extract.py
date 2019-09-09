@@ -25,9 +25,9 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
                         continue
                     if label in ignore_tags:
                         continue
-                    keyword_dict[term.keywordstr].append(label)
-                    # TODO: terms need to be merged to take longest string
-                    ann_dict.add(term, label)
+                    if term:  # are there any keywords here?
+                        keyword_dict[term.keywordstr].append(label)
+                        ann_dict.add(term, label)
         ann_dict.update()
     return ann_dict, dict(filter(lambda x: len(x[1]) > 1, keyword_dict.items()))
 
@@ -35,10 +35,14 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
 def extract_keywords_to_file(bratdb, *, outpath=None,
                              sep='\t', one_label_per_term=True,
                              **kwargs):
+    # TODO: add encoding option?
     _outpath = get_output_path(bratdb, outpath, exts=('extract',))
     outpath = f'{_outpath}.tsv'
+    freq_path = f'{_outpath}.freq.tsv'
     info_path = f'{_outpath}.info'
     dupe_path = f'{_outpath}.dupes'
+    hapax_add_path = f'{_outpath}.add.hapax'
+    hapax_omit_path = f'{_outpath}.omit.hapax'
     data, dupe_dict = get_keywords(bratdb, **kwargs)
 
     keyword_to_concept = {}  # store only most frequent label with each concept
@@ -51,9 +55,42 @@ def extract_keywords_to_file(bratdb, *, outpath=None,
             if one_label_per_term:
                 keyword_to_concept[keyword] = mc[0][0]
 
-    with open(outpath, 'w') as out:
+    terms = defaultdict(set)
+    hapax_added = set()
+    hapax_ignored = set()
+    with open(freq_path, 'w') as out:
         out.write('concept\tterm\tfreq\n')
         for concept, keywordstr, freq in data.term_frequencies:
             # only keep majority term
-            if keyword_to_concept.get(keywordstr, concept) == concept:
+            if not keyword_to_concept or keyword_to_concept.get(keywordstr, concept) == concept:
                 out.write(f'{concept}{sep}{keywordstr}{sep}{freq}\n')
+
+                if freq == 1:  # handle hapax legonoma
+                    if data.get_freq(keywordstr) > 1:  # otherwise exists
+                        terms[concept].add(keywordstr)
+                    else:  # only retain known keywords
+                        new_keyword = [kw for kw in data.get_term_keywords(keywordstr)
+                                       if data.get_keyword_freq(kw) >= 2]
+                        new_keyword_str = ' '.join(str(w) for w in new_keyword)
+                        if data.get_freq(new_keyword_str) <= 1 and len(new_keyword) > 1:
+                            term = data.get_term(keywordstr)
+                            new_stopwords = {str(w) for w in data.get_term_keywords(keywordstr)
+                                             if data.get_keyword_freq(w) < 2}
+                            new_term = Term(term._orig_term, add_stopwords=new_stopwords)
+                            terms[concept].add(new_keyword_str)
+                            data.add(new_term, concept)
+                            data.update()
+                            hapax_added.add(new_keyword_str)
+                        else:
+                            hapax_ignored.add(keywordstr)
+                else:
+                    terms[concept].add(keywordstr)
+
+    with open(hapax_add_path, 'w') as out:
+        out.write('\n'.join(hapax_added))
+    with open(hapax_omit_path, 'w') as out:
+        out.write('\n'.join(hapax_ignored))
+    with open(outpath, 'w') as out:
+        for concept in terms:
+            for keywordstr in terms[concept]:
+                out.write(f'{concept}\t{keywordstr}\t{data.get_term(keywordstr).segmentstr}\n')
