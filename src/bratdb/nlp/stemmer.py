@@ -6,7 +6,12 @@ class Stemmer:
     @staticmethod
     def replace(word, suffix, repl):
         res = word.rfind(suffix)
-        return word[:res] + repl
+        base = word[:res]
+        if len(base) < 4:
+            return word + '(s|ing|ed)?'
+        if base[-1] == base[-2]:
+            base += '?'  # last letter was doubled
+        return base + repl
 
     @staticmethod
     def transform(word):
@@ -25,11 +30,11 @@ class Stemmer:
         elif word.endswith('ied'):
             word = Stemmer.replace(word, 'ied', '(y|ys|ies|ying|i?ed)?')
         elif word.endswith('ed'):
-            word = Stemmer.replace(word, 'ed', r'?e?(s|ing|d)?')
+            word = Stemmer.replace(word, 'ed', r'e?(s|ing|d)?')
         elif word.endswith('ying'):
             word = Stemmer.replace(word, 'y', '(y|ys|ies|ying|i?ed)?')
         elif word.endswith('ing'):
-            word = Stemmer.replace(word, 'ing', r'?e?(s|ing|d)?')
+            word = Stemmer.replace(word, 'ing', r'e?(s|ing|d)?')
         elif word.endswith('y'):
             word = Stemmer.replace(word, 'y', '(y|ys|ies|ying|i?ed)?')
         elif word.endswith('al'):
