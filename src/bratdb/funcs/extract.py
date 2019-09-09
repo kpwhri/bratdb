@@ -34,8 +34,8 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
 
 def extract_keywords_to_file(bratdb, *, outpath=None,
                              sep='\t', one_label_per_term=True,
+                             encoding='utf8',
                              **kwargs):
-    # TODO: add encoding option?
     _outpath = get_output_path(bratdb, outpath, exts=('extract',))
     outpath = f'{_outpath}.tsv'
     freq_path = f'{_outpath}.freq.tsv'
@@ -46,7 +46,7 @@ def extract_keywords_to_file(bratdb, *, outpath=None,
     data, dupe_dict = get_keywords(bratdb, **kwargs)
 
     keyword_to_concept = {}  # store only most frequent label with each concept
-    with open(dupe_path, 'w') as out:
+    with open(dupe_path, 'w', encoding=encoding) as out:
         out.write('keyword\tconcepts\n')
         for keyword, concepts in dupe_dict.items():
             mc = Counter(concepts).most_common()
@@ -58,7 +58,7 @@ def extract_keywords_to_file(bratdb, *, outpath=None,
     terms = defaultdict(set)
     hapax_added = set()
     hapax_ignored = set()
-    with open(freq_path, 'w') as out:
+    with open(freq_path, 'w', encoding=encoding) as out:
         out.write('concept\tterm\tfreq\n')
         for concept, keywordstr, freq in data.term_frequencies:
             # only keep majority term
@@ -86,11 +86,11 @@ def extract_keywords_to_file(bratdb, *, outpath=None,
                 else:
                     terms[concept].add(keywordstr)
 
-    with open(hapax_add_path, 'w') as out:
+    with open(hapax_add_path, 'w', encoding=encoding) as out:
         out.write('\n'.join(hapax_added))
-    with open(hapax_omit_path, 'w') as out:
+    with open(hapax_omit_path, 'w', encoding=encoding) as out:
         out.write('\n'.join(hapax_ignored))
-    with open(outpath, 'w') as out:
+    with open(outpath, 'w', encoding=encoding) as out:
         for concept in terms:
             for keywordstr in terms[concept]:
                 out.write(f'{concept}\t{keywordstr}\t{data.get_term(keywordstr).segmentstr}\n')
