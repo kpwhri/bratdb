@@ -72,6 +72,18 @@ One of the primary goals in getting annotated data is to use extract and deploy 
 ##### bdb-extract
 Extract significant keywords from the `bratdb`. This process will produce several output files describing the work done.
 
+
+```text
+bdb-extract <bratdb>
+``` 
+
+* `bratdb`: the file created from `bdb-build` (above)
+* `--outpath`: specify output file to write to
+* `--keep-tags`: specify which tags should be output
+* `--ignore-tags`: specify which tags to ignore
+* `--logdir`: directory to place logging files 
+
+Output files:
 1. `*.extract.tsv`: primary output file which will be used as input to `bdb-extract-build`
 2. `*.extract.freq.tsv`: show the frequency of each annotated `concept, term` pair
 3. `*.extract.dupes`: often, the same term will be assigned multiple categories/concepts/labels; this document lists the variations
@@ -79,13 +91,36 @@ Extract significant keywords from the `bratdb`. This process will produce severa
 5. `*.extract.omit.hapax`: lists the single-occurring terms which were omitted from the termlist; it may be worthwhile to review and ensure that no potentially useful terms were left out
 
 
-##### bdb-extract-build
-TODO
+##### bdb-extract-build (regexify)
+Convert the extracted terms into regular expressions.
+
+```text
+bdb-extract-build <extract>
+``` 
+
+* `extract`: the file created from `bdb-extract` (above), name like `*.extract.tsv`
+* `--outpath`: specify output file to write to
+* `--logdir`: directory to place logging files 
 
 ##### bdb-apply
-TODO
+Use the extracted terms (built into regular expressions) to identify concepts in text.
 
+```text
+bdb-apply <regex>
+``` 
 
+* `regex`: the file created from `bdb-extract-build` (above); name like `*.regexify.tsv` 
+* `--outpath`: specify output file to write to
+* `--run-hours`: specify maximum amount of time you want the application to run
+* `--logdir`: directory to place logging files 
+
+Reading from the file system:
+* `--directory`: specify topmost directory of files
+* `--extension`: only process files with this extension (default: `.txt`)
+
+Reading from database: (not yet implemented)
+* `--connection-string`: sqlalchemy-like connection string
+* `--query`: query to run, which should give (name, document_text) tuples
 
 ## Versioning
 

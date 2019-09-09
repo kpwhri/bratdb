@@ -11,6 +11,8 @@ def main():
                              ' concept {tab} term {tab} regex')
     parser.add_argument('--directory', default=None,
                         help='Directory containing files to process')
+    parser.add_argument('--extension', default='.txt',
+                        help='Only process files with this extension')
     parser.add_argument('--connection-string', default=None, dest='connection_string',
                         help='sqlalchemy-flavored connection string')
     parser.add_argument('--outpath', default=None,

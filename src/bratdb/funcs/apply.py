@@ -7,11 +7,14 @@ from loguru import logger
 from bratdb.funcs.utils import get_output_path
 
 
-def get_documents(directory=None, connection_string=None, query=None,
+def get_documents(directory=None, extension='.txt',
+                  connection_string=None, query=None,
                   encoding='utf8', **kwargs):
     if directory:
         for root, dirs, files in os.walk(directory):
             for file in files:
+                if extension and not file.endswith(extension):
+                    continue
                 name = file.split('.')[0]
                 fp = os.path.join(root, file)
                 with open(fp, encoding=encoding, errors='ignore') as fh:
@@ -56,7 +59,8 @@ def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
     rx_cnt = 0
     logger.info('Loading files.')
     with open(outpath, 'w') as out:
-        out.write('document\tconcept\tcaptured\n')
+        out.write('document\tconcept\tterm\t'
+                  'captured\n')
         for i, (name, doc) in enumerate(get_documents(**kwargs)):
             for concept, term, regex in regexes:
                 for m in regex.finditer(doc):
