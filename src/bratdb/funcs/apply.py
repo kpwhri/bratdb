@@ -48,7 +48,7 @@ def check_time_expired(start_time, run_hours):
 
 
 def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
-                          run_hours=None, **kwargs):
+                          run_hours=None, exclude_capture=False, **kwargs):
     _outpath = get_output_path(regex, outpath, exts=('apply',))
     start_time = datetime.datetime.now()
     dt = start_time.strftime('%Y%m%d_%H%M%S')
@@ -65,7 +65,8 @@ def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
             for concept, term, regex in regexes:
                 for m in regex.finditer(doc):
                     rx_cnt += 1
-                    out.write(f'{name}\t{concept}\t{term}\t{m.group()}\n')
+                    capture = '' if exclude_capture else m.group()
+                    out.write(f'{name}\t{concept}\t{term}\t{capture}\n')
             if i % 1000 == 0:
                 logger.info(f'Completed {i + 1} documents ({rx_cnt} concepts identified)')
                 if check_time_expired(start_time, run_hours):

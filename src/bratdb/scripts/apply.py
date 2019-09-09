@@ -17,6 +17,8 @@ def main():
                         help='sqlalchemy-flavored connection string')
     parser.add_argument('--outpath', default=None,
                         help='Output file containing frequencies')
+    parser.add_argument('--exclude-capture', default=False, action='store_true',
+                        help='Exclude captured text as this may contain PII')
     parser.add_argument('--run-hours', default=None, type=int, dest='run_hours',
                         help='End program after specified hours of running.')
     parser.add_argument('--logdir', default='.',
