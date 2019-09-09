@@ -23,6 +23,8 @@ setup(name='bratdb',
                   'bdb-freq = bratdb.scripts.freqs:main',
                   'bdb-info = bratdb.scripts.info:main',
                   'bdb-extract = bratdb.scripts.extract:main',
+                  'bdb-extract-build = bratdb.scripts.regexify:main',
+                  # 'bdb-apply = bratdb.scripts.apply:main',
               ]
       },
       install_requires=['loguru', ],
