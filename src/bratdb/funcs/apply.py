@@ -65,4 +65,5 @@ def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
             if i % 1000 == 0:
                 logger.info(f'Completed {i + 1} documents ({rx_cnt} concepts identified)')
                 if check_time_expired(start_time, run_hours):
-                    logger.warning(f'Time expired: terminating after {datetime.datetime.now() - start_time}')
+                    logger.warning(f'Time expired.')
+    logger.info(f'Process completed: {i + 1} documents in {datetime.datetime.now() - start_time}')
