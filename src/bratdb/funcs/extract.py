@@ -17,6 +17,7 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
     # look for overlapping keywords
     keyword_dict = defaultdict(list)  # keywords -> concept
     for annots in brat.annots.values():
+        curr_ann = set()  # all terms in current doc only
         for annot_set in annots:
             for annot in annot_set.values():
                 term = Term(annot.text, ignore_stopwords=ignore_stopwords)
@@ -26,7 +27,11 @@ def get_keywords(bratdb, ignore_tags=None, keep_tags=None,
                     if label in ignore_tags:
                         continue
                     keyword_dict[term.keywordstr].append(label)
-                    ann_dict[(label, term)] += 1
+                    # TODO: terms need to be merged to take longest string
+                    curr_ann.add((label, term))
+        for label, term in curr_ann:
+            # don't let multiple annotations in same doc influence the counts
+            ann_dict[(label, term)] += 1
     return ann_dict, dict(filter(lambda x: len(x[1]) > 1, keyword_dict.items()))
 
 
