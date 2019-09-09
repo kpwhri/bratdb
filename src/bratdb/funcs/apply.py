@@ -38,14 +38,23 @@ def compile_regexes(regex_file, encoding='utf8'):
     return res
 
 
-def apply_regex_to_corpus(regex, outpath=None, encoding='utf8', **kwargs):
+def check_time_expired(start_time, run_hours):
+    if not run_hours:
+        return False
+    return start_time + datetime.timedelta(hours=run_hours) > datetime.datetime.now()
+
+
+def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
+                          run_hours=None, **kwargs):
     _outpath = get_output_path(regex, outpath, exts=('apply',))
-    dt = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+    start_time = datetime.datetime.now()
+    dt = start_time.strftime('%Y%m%d_%H%M%S')
     outpath = f'{_outpath}.{dt}.tsv'
     logger.info(f'Primary output file: {outpath}')
     regexes = compile_regexes(regex, encoding)
     logger.info(f'Compiled {len(regexes)} regexes.')
     rx_cnt = 0
+    logger.info('Loading files.')
     with open(outpath, 'w') as out:
         out.write('document\tconcept\tcaptured\n')
         for i, (name, doc) in enumerate(get_documents(**kwargs)):
@@ -53,5 +62,7 @@ def apply_regex_to_corpus(regex, outpath=None, encoding='utf8', **kwargs):
                 for m in regex.finditer(doc):
                     rx_cnt += 1
                     out.write(f'{name}\t{concept}\t{term}\t{m.group()}\n')
-        if i % 1000 == 0:
-            logger.info(f'Completed {i + 1} documents ({rx_cnt} concepts identified)')
+            if i % 1000 == 0:
+                logger.info(f'Completed {i + 1} documents ({rx_cnt} concepts identified)')
+                if check_time_expired(start_time, run_hours):
+                    logger.warning(f'Time expired: terminating after {datetime.datetime.now() - start_time}')
