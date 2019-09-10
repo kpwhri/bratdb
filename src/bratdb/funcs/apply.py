@@ -20,6 +20,16 @@ def get_documents(directory=None, extension='.txt',
                 with open(fp, encoding=encoding, errors='ignore') as fh:
                     text = clean_text(fh.read().lower())
                 yield name, text
+    elif connection_string and query:
+        import sqlalchemy as sqla
+        if isinstance(query, (list, tuple)):
+            query = ' '.join(query)
+        eng = sqla.create_engine(connection_string)
+        for name, text in eng.execute(query):
+            yield name, text
+    else:
+        raise ValueError('Must specify either `directory` or'
+                         ' both `connection_string` and `query`')
 
 
 def clean_text(text):

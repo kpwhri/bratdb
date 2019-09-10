@@ -118,8 +118,8 @@ Reading from the file system:
 * `--directory`: specify topmost directory of files
 * `--extension`: only process files with this extension (default: `.txt`)
 
-Reading from database: (not yet implemented)
-* `--connection-string`: sqlalchemy-like connection string
+Reading from database:
+* `--connection-string`: sqlalchemy-like connection string; this is the argument passed into `sqlalchemy.create_engine` (see [sqlalchemy docs](https://docs.sqlalchemy.org/en/13/core/engines.html))
 * `--query`: query to run, which should give (name, document_text) tuples
 
 ## Versioning
