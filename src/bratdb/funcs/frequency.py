@@ -24,7 +24,7 @@ def build_simple_freq_file(freqs, ofp):
 
 def build_frequency_file(bratdb, *, outpath=None, title='Term Frequency', **kwargs):
     outpath = get_output_path(bratdb, outpath,
-                              exts=('freq', '.rst' if PYSCRIVEN else '.txt'))
+                              exts=('freq', 'rst' if PYSCRIVEN else '.txt'))
     freqs = get_frequency(bratdb, **kwargs)
     if not PYSCRIVEN:
         return build_simple_freq_file(freqs, outpath)
