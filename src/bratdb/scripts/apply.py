@@ -24,7 +24,8 @@ def main():
     parser.add_argument('--logdir', default='.',
                         help='Directory to place log files.')
     parser.add_argument('--query', default=None, nargs='+',
-                        help='query to retrieve name, document pairs from database table')
+                        help='query to retrieve name, document_text pairs from database table;'
+                             ' additional items can be included, but text must be last')
     args = parser.parse_args()
     initialize_logging(logdir=args.logdir)
     apply_regex_to_corpus(**vars(args))

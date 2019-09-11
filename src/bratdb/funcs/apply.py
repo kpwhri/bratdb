@@ -25,7 +25,9 @@ def get_documents(directory=None, extension='.txt',
         if isinstance(query, (list, tuple)):
             query = ' '.join(query)
         eng = sqla.create_engine(connection_string)
-        for name, text in eng.execute(query):
+        for row in eng.execute(query):
+            name = ','.join(str(x) for x in row[:-1])
+            text = row[-1]
             yield name, text
     else:
         raise ValueError('Must specify either `directory` or'
