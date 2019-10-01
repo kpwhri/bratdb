@@ -26,6 +26,7 @@ setup(name='bratdb',
                   'bdb-merge = bratdb.scripts.merge:main',
                   'bdb-extract-build = bratdb.scripts.regexify:main',
                   'bdb-apply = bratdb.scripts.apply:main',
+                  'bdb-clean = bratdb.scripts.clean:main',
               ]
       },
       install_requires=['loguru', ],
