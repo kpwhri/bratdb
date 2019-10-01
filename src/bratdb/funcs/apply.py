@@ -60,7 +60,7 @@ def check_time_expired(start_time, run_hours):
 
 
 def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
-                          run_hours=None, exclude_capture=False,
+                          run_hours=None, exclude_captured=False,
                           log_incr=10000,
                           **kwargs):
     """
@@ -69,7 +69,7 @@ def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
     :param outpath:
     :param encoding:
     :param run_hours:
-    :param exclude_capture:
+    :param exclude_captured:
     :param log_incr: number of records to run before reporting how long this many
         documents took to run
     :param kwargs:
@@ -90,7 +90,7 @@ def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
             for concept, term, regex in regexes:
                 for m in regex.finditer(doc):
                     rx_cnt += 1
-                    capture = '' if exclude_capture else m.group()
+                    capture = '' if exclude_captured else m.group()
                     out.write(f'{name}\t{concept}\t{term}\t{capture}\n')
             if i % log_incr == 0:
                 logger.info(f'Completed {i + 1} documents ({rx_cnt} concepts identified)')
