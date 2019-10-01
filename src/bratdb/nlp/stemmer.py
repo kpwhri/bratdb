@@ -40,5 +40,5 @@ class Stemmer:
         elif word.endswith('al'):
             word = Stemmer.replace(word, 'al', '(al)?e?(s|ing|d)?')
         else:
-            word += '(s|ing|ed)'
+            word += '(s|ing|ed)?'
         return word
