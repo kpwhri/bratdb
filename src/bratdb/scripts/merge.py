@@ -13,7 +13,6 @@ def main():
     parser.add_argument('--logdir', default='.',
                         help='Directory to place log files.')
     args = parser.parse_args()
-    print(args)
     initialize_logging(logdir=args.logdir)
     merge_extracts(**vars(args))
 

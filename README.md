@@ -113,6 +113,7 @@ bdb-apply <regex>
 * `--outpath`: specify output file to write to
 * `--run-hours`: specify maximum amount of time you want the application to run
 * `--logdir`: directory to place logging files 
+* `--exclude-captured`: exclude captured text (ergo, include only metadata and no PII in output file)
 
 Reading from the file system:
 * `--directory`: specify topmost directory of files
@@ -121,6 +122,29 @@ Reading from the file system:
 Reading from database:
 * `--connection-string`: sqlalchemy-like connection string; this is the argument passed into `sqlalchemy.create_engine` (see [sqlalchemy docs](https://docs.sqlalchemy.org/en/13/core/engines.html))
 * `--query`: query to run, which should give (name, document_text) tuples
+
+##### bdb-clean
+Expressions which generate the same stemmed/regex form. For example "depressed" and "depresses" will both generate the same regex form. This can also be useful after a `merge`
+
+```text
+bdb-clean <regex_or_extract>
+``` 
+
+* `regex_or_extract`: the file created from `bdb-extract` or `bdb-extract-build` (above); name like `*.regexify.tsv` or `*.extract.tsv`  
+* `--outpath`: specify output file to write to
+* `--logdir`: directory to place logging files 
+
+##### bdb-merge
+Merge multiple `*.extract.tsv` files.
+
+```text
+bdb-merge <extract> <extract> ...
+``` 
+
+* `extract`: supply each `*.extract.tsv` file to merge as a separate argument   
+* `--outpath`: specify output file to write to
+* `--logdir`: directory to place logging files 
+
 
 ## Versioning
 
