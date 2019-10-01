@@ -49,7 +49,7 @@ def compile_regexes(regex_file, encoding='utf8'):
     with open(regex_file, encoding=encoding) as fh:
         for line in fh:
             concept, term, regex = line.strip().split('\t')
-            res.append((concept, term, re.compile(regex)))
+            res.append((concept, term, re.compile(regex, re.IGNORECASE)))
     return res
 
 
