@@ -84,7 +84,7 @@ def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
     logger.info(f'Compiled {len(regexes)} regexes.')
     rx_cnt = 0
     logger.info('Loading files.')
-    with open(outpath, 'w') as out:
+    with open(outpath, 'w', encoding=encoding) as out:
         out.write('document\tconcept\tterm\tcaptured\n')
         for i, (name, doc) in enumerate(get_documents(**kwargs)):
             for concept, term, regex in regexes:
