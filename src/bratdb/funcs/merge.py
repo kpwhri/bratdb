@@ -7,13 +7,14 @@ from loguru import logger
 from bratdb.funcs.utils import get_output_path
 
 
-def merge_extracts(*extracts, outpath=None, encoding='utf8', **kwargs):
+def merge_extracts(*extracts, outpath=None, encoding='utf8', ignore_duplicates=True, **kwargs):
     if not extracts:
         extracts = kwargs['extracts']
     _outpath = get_output_path(extracts[0], outpath, exts=('extract.combined',))
     outpath = f'{_outpath}.tsv'
     keyword_to_concept = {}
     concept_to_term = defaultdict(lambda: defaultdict(str))
+    existing_terms = set()
     for i, extract in enumerate(extracts):
         name = os.path.basename(extract)
         with open(extract, encoding=encoding) as fh:
@@ -28,9 +29,12 @@ def merge_extracts(*extracts, outpath=None, encoding='utf8', **kwargs):
 
                 if keywords in concept_to_term[concept]:
                     orig_term = concept_to_term[concept][keywords]
-                    concept_to_term[concept][keywords] = merge_terms(orig_term, term)
+                    term = merge_terms(orig_term, term)
+                if ignore_duplicates and term in existing_terms:
+                    pass
                 else:
                     concept_to_term[concept][keywords] = term
+                    existing_terms.add(term)
 
     with open(outpath, 'w', encoding=encoding) as out:
         for concept in concept_to_term:
