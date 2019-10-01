@@ -19,26 +19,36 @@ def regexify_keywords_to_file(extract, outpath=None, encoding='utf8',
             concept, keywords, term = line.strip().split('\t')
             words = []
             prev_word = False
-            for word in term.split(' '):
+            terms = term.split(' ')
+            for word in terms:
                 if code_pat.match(word):
-                    regexes.append((concept, keywords, fr'\b{word}\b'))
+                    code = word.replace('.', r'\.')
+                    regexes.append((concept, keywords, fr'\b{code}\b'))
+                    prev_word = False
                 elif num_pat.match(word):
                     if prev_word:
                         words.append(r'\W*')
-                    words.append(r'\d+')
+                    if len(terms) > 1:
+                        words.append(r'\d+')
+                    else:
+                        words.append(word)
                     prev_word = True
                 elif slop_pat.match(word):
-                    m = slop_pat.match(word)
-                    cnt = int(m.group('slop')) + extra_slop
-                    if '.' in m.group('punct') or ';' in m.group('punct'):
-                        words.append(rf'\W*(\w+\W*){{0,{cnt}}}')
-                    else:
-                        words.append(rf'[^\w\.;]*(\w+[^\w\.;]*){{0,{cnt}}}')
+                    if prev_word:
+                        m = slop_pat.match(word)
+                        cnt = int(m.group('slop')) + extra_slop
+                        if '.' in m.group('punct') or ';' in m.group('punct'):
+                            words.append(rf'\W*(\w+\W*){{0,{cnt}}}')
+                        else:
+                            words.append(rf'[^\w\.;]*(\w+[^\w\.;]*){{0,{cnt}}}')
                     prev_word = False
                 else:  # is word
                     if prev_word:
                         words.append(r'\W*')
-                    words.append(Stemmer.transform(word))
+                    if len(word) > 4:
+                        words.append(Stemmer.transform(word))
+                    else:
+                        words.append(fr'\b{word}\b')
                     prev_word = True
             regexes.append((concept, keywords, ''.join(words)))
 
