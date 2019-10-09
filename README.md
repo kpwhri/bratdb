@@ -8,8 +8,12 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-* Python 3.6
+* Python 3.6+
     * loguru (`pip install loguru`) 
+    * Other modules may be required to support, e.g., database access
+        * sqlalchemy
+        * pyodbc
+        * etc.
 
 ### Installing
 
@@ -120,7 +124,10 @@ Reading from the file system:
 * `--extension`: only process files with this extension (default: `.txt`)
 
 Reading from database:
-* `--connection-string`: sqlalchemy-like connection string; this is the argument passed into `sqlalchemy.create_engine` (see [sqlalchemy docs](https://docs.sqlalchemy.org/en/13/core/engines.html))
+* required: `sqlalchemy` and any dependencies for the connection (e.g., `pyodbc`)
+* `--connection-string`: sqlalchemy-like connection string
+    * this is the argument passed into `sqlalchemy.create_engine` (see [sqlalchemy docs](https://docs.sqlalchemy.org/en/13/core/engines.html))
+    * e.g., `--connection-string "mssql+pyodbc://@SERVER/database?driver=SQL Server"`
 * `--query`: query to run, which should give (name, document_text) tuples
 
 ##### bdb-clean
