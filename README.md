@@ -9,12 +9,11 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 * Python 3.6+
-    * loguru (`pip install loguru`) 
-    * Other modules may be required to support, e.g., database access
-        * sqlalchemy
-        * pyodbc
-        * etc.
-
+* Install packages from `requirements.txt` (`pip install -r requirements.txt`)
+* For running tests/other development, install `requirements_dev.txt`
+* For running with database, install `requirements_db.txt` if your database interoperates with `pyodbc`
+    * For other database, install `sqlalchemy` and whatever driver you need (e.g., `psycopg2` for postgres, etc.)
+    
 ### Installing
 
 bratdb supports interacting with brat data via the command line.
