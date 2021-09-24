@@ -1,4 +1,5 @@
 import os
+import pathlib
 import pickle
 from collections import defaultdict
 
@@ -46,9 +47,12 @@ def load_brat_dump(path, *, version=0):
 
 
 def get_output_path(target_path, outpath=None, exts=('txt',)):
-    if outpath:  # outpath already exists
-        return outpath
     path, fn = os.path.split(target_path)
     fn_elements = (fn.split('.')[0],) + exts
-    outpath = os.path.join(path, '.'.join(fn_elements))
-    return outpath
+    if outpath:  # outpath already exists
+        path = pathlib.Path(outpath)
+        if path.is_file():  # just return file
+            return path
+        elif path.is_dir():
+            return path / '.'.join(fn_elements)
+    return os.path.join(path, '.'.join(fn_elements))

@@ -1,12 +1,17 @@
-import os
+import pathlib
 import sys
 
 from loguru import logger
 
 
 def initialize_logging(logdir):
+    if not logdir:
+        logdir = '.'
+    path = pathlib.Path(logdir)
+    try:
+        path.mkdir(exist_ok=True)
+    except Exception as e:
+        path = pathlib.Path('.')
     logger.remove()
     logger.start(sys.stderr, level='INFO')
-    logfile = 'bratdb_{time}.log'
-    logpath = os.path.join(logdir, logfile)
-    logger.add(logpath, level='DEBUG', rotation='0:01', compression='zip')
+    logger.add(path / 'bratdb_{time}.log', level='DEBUG')

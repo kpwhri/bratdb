@@ -113,7 +113,7 @@ bdb-apply <regex>
 ``` 
 
 * `regex`: the file created from `bdb-extract-build` (above); name like `*.regexify.tsv` 
-* `--outpath`: specify output file to write to
+* `--outpath`: specify output directory to write to
 * `--run-hours`: specify maximum amount of time you want the application to run
 * `--logdir`: directory to place logging files 
 * `--exclude-captured`: exclude captured text (ergo, include only metadata and no PII in output file)
