@@ -13,10 +13,10 @@ Add two fields to the output of bratdb (`bdb-apply`) -- studyid and note_date.
 
 # Example runs
 
-    * python --bdb-file C:\data\brat_dump.apply.tsv --corpus-file C:\data\corpus.csv
+    * python export.py --bdb-file C:\data\brat_dump.apply.tsv --corpus-file C:\data\corpus.csv
         - corpus.csv is assumed to have column names corresponding to 'document', 'studyid', and 'note_date'
         - otherwise, you'll need to run the following
-    * python --bdb-file C:\data\brat_dump.apply.tsv --corpus-file C:\data\corpus.csv \
+    * python export.py --bdb-file C:\data\brat_dump.apply.tsv --corpus-file C:\data\corpus.csv \
             --corpus-file-studyid-col study_id --corpus-file-date-col date --corpus-file-doc-col doc_id
 
 # Input Arguments
