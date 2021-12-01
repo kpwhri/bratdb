@@ -59,6 +59,23 @@ def check_time_expired(start_time, run_hours):
     return start_time + datetime.timedelta(hours=run_hours) > datetime.datetime.now()
 
 
+def apply_regexes_to_text(regexes, text, newline_replace=' ', exclude_captured=False):
+    for concept, term, regex in regexes:
+        for m in regex.finditer(text):
+            capture = '' if exclude_captured else m.group()
+            capture = capture.replace('\n', newline_replace)
+            yield concept, term, capture
+
+
+def apply_regex_to_df(regex, df, *, encoding='utf8', newline_replace=' ', exclude_captured=False):
+    regexes = compile_regexes(regex, encoding)
+    res = []
+    for r in df.itertuples():
+        for concept, term, capture in apply_regexes_to_text(regexes, r.note_text):
+            res.append((r.Index, concept, term, capture))
+    return res
+
+
 def apply_regex_to_corpus(regex, outpath=None, encoding='utf8',
                           run_hours=None, exclude_captured=False,
                           log_incr=10000, newline_replace=' ',
